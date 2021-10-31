@@ -1,0 +1,28 @@
+---
+- name: Create /usr/local/etc/firewall
+  file:
+    path: /usr/local/etc/firewall
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
+- name: Copy template
+  template:
+    src: "{{ firewall.template }}"
+    dest: /usr/local/etc/firewall/enable.sh
+    owner: root
+    group: root
+    mode: 0500
+  notify:
+    start_firewall
+
+- name: Setup systemd unit
+  copy:
+    src: firewall.service
+    dest: /etc/systemd/system/firewall.service
+    owner: root
+    group: root
+    mode: 0400
+  notify:
+    start_firewall
